@@ -12,14 +12,37 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
     
     override func messageReceived(withName messageName: String, from page: SFSafariPage, userInfo: [String : Any]?) {
         // This method will be called when a content script provided by your extension calls safari.extension.dispatchMessage("message").
+        let defaults = UserDefaults.standard
+        var time: Double = 0
+        if let startTime = defaults.string(forKey: "time") {
+            NSLog("startTime (\(startTime))")
+            time = Double(startTime) ?? 0
+        }
+        let currentTime = NSDate().timeIntervalSince1970
+        let blacklist = ["youtube.com", "facebook.com"]
+        if currentTime - time >= 60 * 30 {
+            NSLog("early return (\(currentTime - time))")
+            return
+        }
         page.getPropertiesWithCompletionHandler { properties in
             NSLog("The extension received a message (\(messageName)) from a script injected into (\(String(describing: properties?.url))) with userInfo (\(userInfo ?? [:]))")
+            var shouldBlock = false;
+            for item in blacklist {
+                if String(describing: properties?.url).contains(item) {
+                    shouldBlock = true
+                }
+            }
+            if shouldBlock {
+                page.dispatchMessageToScript(withName: "startBlocking")
+            }
         }
     }
     
     override func toolbarItemClicked(in window: SFSafariWindow) {
         // This method will be called when your toolbar item is clicked.
         NSLog("The extension's toolbar item was clicked")
+        let defaults = UserDefaults.standard
+        defaults.set("\(NSDate().timeIntervalSince1970)", forKey: "time")
     }
     
     override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping ((Bool, String) -> Void)) {
