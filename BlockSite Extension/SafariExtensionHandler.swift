@@ -12,6 +12,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
     
     override func messageReceived(withName messageName: String, from page: SFSafariPage, userInfo: [String : Any]?) {
         // This method will be called when a content script provided by your extension calls safari.extension.dispatchMessage("message").
+        let whitelists = ["blocksite-gcloud-app.wl.r.appspot.com"]
         let defaults = UserDefaults.standard
         var time: Double = 0
         if let startTime = defaults.string(forKey: "time") {
@@ -26,6 +27,12 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
         }
         page.getPropertiesWithCompletionHandler { properties in
             NSLog("The extension received a message (\(messageName)) from a script injected into (\(String(describing: properties?.url))) with userInfo (\(userInfo ?? [:]))")
+            var shouldBlock = true
+            for item in whitelists {
+                if String(describing: properties?.url).contains(item) {
+                    shouldBlock = false
+                }
+            }
             /*
             var shouldBlock = false;
             for item in blacklist {
@@ -33,11 +40,12 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
                     shouldBlock = true
                 }
             }
-            if shouldBlock {
-                page.dispatchMessageToScript(withName: "startBlocking")
-            }
             */
-            page.dispatchMessageToScript(withName: "startBlocking")
+            if shouldBlock {
+                let endTime = time + 60 * 30
+                page.dispatchMessageToScript(
+                    withName: "startBlocking", userInfo:["time": endTime])
+            }
         }
     }
     
