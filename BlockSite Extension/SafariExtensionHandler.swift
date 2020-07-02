@@ -19,13 +19,14 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
             time = Double(startTime) ?? 0
         }
         let currentTime = NSDate().timeIntervalSince1970
-        let blacklist = ["youtube.com", "facebook.com"]
+        // let blacklist = ["youtube.com", "facebook.com"]
         if currentTime - time >= 60 * 30 {
             NSLog("early return (\(currentTime - time))")
             return
         }
         page.getPropertiesWithCompletionHandler { properties in
             NSLog("The extension received a message (\(messageName)) from a script injected into (\(String(describing: properties?.url))) with userInfo (\(userInfo ?? [:]))")
+            /*
             var shouldBlock = false;
             for item in blacklist {
                 if String(describing: properties?.url).contains(item) {
@@ -35,6 +36,8 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
             if shouldBlock {
                 page.dispatchMessageToScript(withName: "startBlocking")
             }
+            */
+            page.dispatchMessageToScript(withName: "startBlocking")
         }
     }
     

@@ -8,6 +8,6 @@ safari.self.addEventListener("message", handleMessage);
 function handleMessage(event) {
     console.log("handle message");
     if (window.top === window) {
-        window.location.href = "https://localhost";
+        window.location.href = "http://localhost";
     }
 }
