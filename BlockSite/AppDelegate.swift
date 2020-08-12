@@ -34,10 +34,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             let range = NSRange(location: 0, length: path.utf16.count)
             let regex = try! NSRegularExpression(pattern: "add\\?(\\d+)")
             if let match = regex.firstMatch(in: path, options: [], range: range) {
-                if let timeRange = Range(match.range(at: 1), in: path) {
-                    let time = path[timeRange]
-                    sharedDefaults.set("\(time)", forKey: "time")
-                    
+                sharedDefaults.set("\(NSDate().timeIntervalSince1970)", forKey: "time")
+                if let durationRange = Range(match.range(at: 1), in: path) {
+                    let duration = path[durationRange]
+                    sharedDefaults.set("\(duration)", forKey: "duration")
                 }
             }
         }

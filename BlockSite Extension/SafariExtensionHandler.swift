@@ -21,8 +21,11 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
             time = Double(startTime) ?? 0
         }
         let currentTime = NSDate().timeIntervalSince1970
-        // let blacklist = ["youtube.com", "facebook.com"]
-        if currentTime - time >= 60 * 30 {
+        var duration: Double = 30 * 60
+        if let d = defaults.string(forKey: "duration") {
+            duration = (Double(d) ?? 30) * 60
+        }
+        if currentTime - time >= duration {
             NSLog("early return (\(currentTime - time))")
             return
         }
@@ -43,7 +46,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
             }
             */
             if shouldBlock {
-                let endTime = time + 60 * 30
+                let endTime = time + duration
                 page.dispatchMessageToScript(
                     withName: "startBlocking", userInfo:["time": endTime])
             }
