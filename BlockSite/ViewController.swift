@@ -21,10 +21,6 @@ class ViewController: NSViewController {
     }
     
     @IBAction func openSafariExtensionPreferences(_ sender: AnyObject?) {
-        let sharedDefaults = UserDefaults(suiteName: self.suiteName)!
-        if let startTime = sharedDefaults.string(forKey: "time") {
-            NSLog("startTime (\(startTime))")
-        }
         SFSafariApplication.showPreferencesForExtension(withIdentifier: "com.wwei10.BlockSite-Extension") { error in
             if let _ = error {
                 // Insert code to inform the user that something went wrong.
