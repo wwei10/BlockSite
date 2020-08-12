@@ -9,11 +9,12 @@
 import SafariServices
 
 class SafariExtensionHandler: SFSafariExtensionHandler {
-    
+    let suiteName: String = "group.SC6JAR9UQ9.com.wwei10.BlockSite"
+
     override func messageReceived(withName messageName: String, from page: SFSafariPage, userInfo: [String : Any]?) {
         // This method will be called when a content script provided by your extension calls safari.extension.dispatchMessage("message").
         let whitelists = ["blocksite-gcloud-app.wl.r.appspot.com"]
-        let defaults = UserDefaults.standard
+        let defaults = UserDefaults(suiteName:self.suiteName)!
         var time: Double = 0
         if let startTime = defaults.string(forKey: "time") {
             NSLog("startTime (\(startTime))")
@@ -52,7 +53,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
     override func toolbarItemClicked(in window: SFSafariWindow) {
         // This method will be called when your toolbar item is clicked.
         NSLog("The extension's toolbar item was clicked")
-        let defaults = UserDefaults.standard
+        let defaults = UserDefaults(suiteName:self.suiteName)!
         defaults.set("\(NSDate().timeIntervalSince1970)", forKey: "time")
     }
     
