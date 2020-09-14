@@ -10,6 +10,6 @@ function handleMessage(event) {
     if (window.top === window) {
         let time = parseInt(event.message["time"])
         console.log(parseInt(time));
-        window.location.href = "https://blocksite-gcloud-app.wl.r.appspot.com/?time=" + time;
+        window.location.href = "https://blocksite-gcloud-app.wl.r.appspot.com/" + time;
     }
 }
